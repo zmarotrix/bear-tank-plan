@@ -87,6 +87,9 @@ input[type=checkbox]:checked::after{content:"";width:12px;height:12px;background
 .slot .src{display:block;font-size:.9rem;line-height:1.3;color:var(--mute)}
 .slot.done .ic{box-shadow:0 0 0 2px var(--good)}
 .slot.done .src{color:var(--good)}
+.slot .en{display:flex;flex-wrap:wrap;column-gap:6px;align-items:baseline;margin-top:3px;font-size:.85rem;line-height:1.3;color:var(--mute)}
+.slot .en::before{content:"";flex:none;align-self:center;width:7px;height:7px;transform:rotate(45deg);background:var(--link);opacity:.75}
+.pnote{margin-top:10px;max-width:none}
 .mid{position:relative;background:#1a1826;display:grid;align-content:end;min-height:420px}
 .mid img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 0}
 .mid>div{position:relative;padding:60px 18px 18px;background:linear-gradient(transparent,rgba(10,10,18,.92) 55%);color:#fff;display:grid;gap:8px}
@@ -223,7 +226,7 @@ footer{padding-block:24px 60px;border-top:1px solid var(--line)}
 <main class="in">
 <div class="intro"><div><h1>Fresh 60 to raid ready</h1><p>Alliance druid, WoW: Forever. Tick pieces and steps as you go. Item and quest names open on Wowhead.</p><p class="sm legend"><span class="bis">BiS</span> Best in slot in the Wowhead guide</p><p class="sm mute" id="saved" role="status">Progress saves in this browser</p></div>
   <div class="next"><span class="lab">Do next</span><ol id="next"></ol></div></div>
-<div class="pane" id="pane"></div>
+<div class="pane" id="pane"></div><p class="sm mute pnote" id="pnote"></p>
 <ol class="time" id="time">
   <li data-from="2026-11-24" data-to="2026-11-26"><b>Nov 24–26</b>Solo quests, Blackmaw Hold, stage 1</li>
   <li data-from="2026-11-27" data-to="2026-11-30"><b>Nov 27–30</b>Stratholme, LBRS, Scholomance, stage 2, Stalwart Cloak</li>
@@ -344,7 +347,10 @@ function box(k,label){return '<input type="checkbox" data-key="'+k+'" aria-label
 
 // character pane
 var LEFT=["face","horn","paul","stal","armor","wrist","legs"],RIGHT=["slag","dino","feet","rop","ouro","aca","talis"],FOOT=["maul","brut"],TARGET=LEFT.concat(RIGHT,FOOT);
-function slot(k){var d=I[k];return '<div class="slot'+qc(k)+'" data-row="'+k+'">'+ic(k)+'<span><span class="nm">'+nm(k)+'</span><span class="src">'+d[4]+'</span></span>'+box(k,"Have "+d[1])+'</div>'}
+var KIT=["item=15564","Rugged Armor Kit","+40 armor, +5 stamina"],EN={face:["item=11646","Lesser Arcanum of Voracity","+8 stamina"],horn:["spell=1249060","Necklace - Deflection","+5 defense"],paul:["item=18182","Chromatic Mantle of the Dawn","+5 all resistances"],stal:["spell=20015","Cloak - Superior Defense","+70 armor"],armor:KIT,wrist:["spell=1248665","Bracer - Superior Deflection","+9 defense"],legs:KIT,slag:KIT,feet:KIT,maul:["spell=1248760","Weapon - Recovery","heals 5% on dodge or parry"]};
+function en(k){var e=EN[k];return e?'<span class="en">'+link(e[0],e[1])+'<span>'+e[2]+'</span></span>':''}
+function slot(k){var d=I[k];return '<div class="slot'+qc(k)+'" data-row="'+k+'">'+ic(k)+'<span><span class="nm">'+nm(k)+'</span><span class="src">'+d[4]+'</span>'+en(k)+'</span>'+box(k,"Have "+d[1])+'</div>'}
+$("pnote").innerHTML='Enchants are the defensive picks from '+link("guide/classes/druid/feral/enchants-consumables-pve-tank","Wowhead’s enchant guide")+', which says the picks may change after more testing. For more threat, use Greater Stats on the chest, Superior Strength on bracers and gloves, and Crusader on the weapon.';
 $("pane").innerHTML='<div class="col">'+LEFT.map(slot).join("")+'</div><div class="mid"><img src="img/bear.jpg" alt="A dire bear roaring on a cliff under the moon"><div><strong class="num" data-count>0 / 16</strong><span>target pieces</span><div class="track"><i data-fill></i></div></div></div><div class="col">'+RIGHT.map(slot).join("")+'</div><div class="foot">'+FOOT.map(slot).join("")+'</div>';
 $("pane").addEventListener("click",function(e){if(e.target.closest("a,input"))return;var r=e.target.closest(".slot");if(r)r.querySelector("input").click()});
 
